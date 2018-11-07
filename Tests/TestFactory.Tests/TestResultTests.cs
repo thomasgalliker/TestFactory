@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 using FluentAssertions;
 using TestFactory.Tests.Testdata;
-using TestFactory.TestSteps;
 using Xunit;
 
 namespace TestFactory.Tests
