@@ -7,11 +7,11 @@ using Xunit.Abstractions;
 
 namespace TestFactory.Tests.TestSteps
 {
-    public class ActionStepTests
+    public class ActionTestStepTests
     {
         private readonly ITestOutputHelper testOutputHelper;
 
-        public ActionStepTests(ITestOutputHelper testOutputHelper)
+        public ActionTestStepTests(ITestOutputHelper testOutputHelper)
         {
             this.testOutputHelper = testOutputHelper;
         }
