@@ -23,8 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="Testdata\" />
-    <Folder Include="Utils\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\TestFactory\TestFactory.csproj" />

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using TestFactory.TestSteps;
 
 namespace TestFactory
 {
@@ -14,38 +13,11 @@ namespace TestFactory
             this.testSteps = new List<ITestStep>();
         }
 
-        public SystemTestBuilder AddTestStep(Action actionTestStep)
-        {
-            this.testSteps.Add(new ActionTestStep(actionTestStep));
-
-            return this;
-        }
-
         public SystemTestBuilder AddTestStep(ITestStep testStep)
         {
             this.testSteps.Add(testStep);
 
             return this;
-        }
-
-        public SystemTestBuilder Given(IGivenTestStep givenTestStep)
-        {
-            return this.AddTestStep(givenTestStep);
-        }
-
-        public SystemTestBuilder When(IWhenTestStep whenTestStep)
-        {
-            return this.AddTestStep(whenTestStep);
-        }
-
-        public SystemTestBuilder Then(IThenTestStep thenTestStep)
-        {
-            return this.AddTestStep(thenTestStep);
-        }
-
-        public SystemTestBuilder Then(Action thenTestStep)
-        {
-            return this.AddTestStep(thenTestStep);
         }
 
         public ITestResult Run()
