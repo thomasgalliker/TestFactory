@@ -3,7 +3,7 @@
 
 <img src="https://raw.githubusercontent.com/thomasgalliker/TestFactory/master/logo.png" width="100" height="100" alt="TestFactory" align="right"></img>
 
-TestFactory is a utility which helps composing and orchestrating test runs.
+TestFactory is a utility which helps composing and orchestrating test runs. TestFactory allows to create collections of test steps and guarantees that test steps run in a specific order. The result of a test run is summarized in a test summary.
 
 ### Download and Install TestFactory
 This library is available on NuGet: https://www.nuget.org/packages/TestFactory/
@@ -14,19 +14,16 @@ Use the following command to install TestFactory using NuGet package manager con
 You can use this library in any .Net project which is compatible to PCL (e.g. Xamarin Android, iOS, Windows Phone, Windows Store, Universal Apps, etc.)
 
 ### API Usage
-#### Orchestrating test steps
-The following sample program shows how TestFactory can be used to orchestrate independent test steps:
-```
-to be done
-```
-The output on the console looks like following:
-```
-to be done
+#### Orchestrating Test Steps
+The following code excerpt shows how TestFactory can be used to orchestrate a collection of independent test steps:
+```C#
+{
+}
 ```
 
 #### Reporting Test Runs
-The following sample program shows how TestFactory can be used to write C# initializer code from in-memory to the console output:
-```
+The following code excerpt shows how TestFactory reports the test result summary of a test run:
+```C#
 {
 }
 ```
