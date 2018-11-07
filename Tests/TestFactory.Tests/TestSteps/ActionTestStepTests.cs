@@ -17,7 +17,7 @@ namespace TestFactory.Tests.TestSteps
         }
 
         [Fact]
-        public void ShouldWaitOnWaitStepRun()
+        public void ShouldCallActionOnRun()
         {
             // Arrange
             var actionCalled = false;
