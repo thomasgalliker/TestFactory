@@ -42,19 +42,36 @@ namespace TestFactory
 
         private static readonly string Intent = Indent(8);
 
-        public class Formats
-        {
-            public const string Full = "F";
-            public const string SummaryOnly = "S";
-            public const string Compact = "C";
-        }
 
+
+        /// <summary>
+        /// Returns the string representation of <see cref="TestResult"/>.
+        /// </summary>
+        /// <returns>The string representation of <see cref="TestResult"/></returns>
         public override string ToString()
         {
             return this.ToString(Formats.Full);
         }
 
-        public string ToString(string format = null, IFormatProvider provider = null)
+        /// <summary>
+        /// Returns the string representation of <see cref="TestResult"/>.
+        /// Use <see cref="Formats"/> to select a specific formatting.
+        /// </summary>
+        /// <param name="format">Formatting of the string representation.</param>
+        /// <returns>The string representation of <see cref="TestResult"/></returns>
+        public string ToString(string format)
+        {
+            return this.ToString(format, null);
+        }
+
+        /// <summary>
+        /// Returns the string representation of <see cref="TestResult"/>.
+        /// Use <see cref="Formats"/> to select a specific formatting.
+        /// </summary>
+        /// <param name="format">Formatting of the string representation.</param>
+        /// <param name="provider">(Not implemented)</param>
+        /// <returns>The string representation of <see cref="TestResult"/></returns>
+        public string ToString(string format, IFormatProvider provider)
         {
             if (string.IsNullOrEmpty(format))
             {

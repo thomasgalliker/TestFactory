@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using TestFactory.Tests.Testdata;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -77,21 +78,6 @@ namespace TestFactory.Tests
             testResult.TestStepResults[1].Result.Should().NotBeNull();
 
             this.testOutputHelper.WriteLine(testResult.ToString());
-        }
-    }
-
-    public class NestedTestStep : ITestStep
-    {
-        public ITestStepResult Run()
-        {
-            var nestedSystemTestBuilder = new SystemTestBuilder();
-            nestedSystemTestBuilder.AddTestStep(() => { });
-            nestedSystemTestBuilder.AddTestStep(() => { });
-            nestedSystemTestBuilder.AddTestStep(() => { throw new NotSupportedException(); });
-
-            var nestedTestResult = nestedSystemTestBuilder.Run();
-
-            return new TestStepResult(this, nestedTestResult);
         }
     }
 }
