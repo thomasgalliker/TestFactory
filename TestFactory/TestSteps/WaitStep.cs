@@ -1,18 +1,29 @@
 ﻿
+using System;
+
 namespace TestFactory.TestSteps
 {
     public class WaitStep : ITestStep
     {
-        private readonly int time;
+        private readonly TimeSpan timeSpan;
 
-        public WaitStep(int time)
+        public WaitStep(TimeSpan timeSpan)
         {
-            this.time = time;
+            this.timeSpan = timeSpan;
+        }
+
+        public WaitStep(int millisecondsTimeout)
+        {
+            this.timeSpan = TimeSpan.FromMilliseconds(millisecondsTimeout);
         }
 
         public ITestStepResult Run()
         {
-            //Thread.Sleep(this.time);
+#if NETSTANDARD
+            System.Threading.Tasks.Task.Delay(this.timeSpan.Milliseconds).Wait();
+#else
+            System.Threading.Thread.Sleep(this.timeSpan.Milliseconds);
+#endif
             return new TestStepResult(this);
         }
     }
