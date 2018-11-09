@@ -25,24 +25,20 @@ namespace TestFactory
             var testStepResults = new List<ITestStepResult>();
             foreach (var testStep in this.testSteps)
             {
+                var stopwatch = new Stopwatch();
+                
                 try
                 {
-                    var stopwatch = new Stopwatch();
                     stopwatch.Start();
                     var testStepResult = testStep.Run();
                     stopwatch.Stop();
-
-                    var result = testStepResult as TestStepResult;
-                    if (result != null)
-                    {
-                        result.Duration = stopwatch.Elapsed;
-                    }
 
                     testStepResults.Add(testStepResult);
                 }
                 catch (Exception ex)
                 {
-                    testStepResults.Add(new TestStepResult(testStep, ex));
+                    stopwatch.Stop();
+                    testStepResults.Add(new TestStepResult(testStep, ex, stopwatch.Elapsed));
                 }
             }
 
