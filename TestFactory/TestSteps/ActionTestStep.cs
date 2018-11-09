@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace TestFactory.TestSteps
 {
@@ -13,7 +14,7 @@ namespace TestFactory.TestSteps
             this.action = action;
         }
 
-        public ITestStepResult Run()
+        public Task<ITestStepResult> Run()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -29,11 +30,11 @@ namespace TestFactory.TestSteps
             }
 
             stopwatch.Stop();
-            return new TestStepResult(
+            return Task.FromResult<ITestStepResult>(new TestStepResult(
                 testStep: this,
                 duration: stopwatch.Elapsed,
-                isSuccessful: exception == null, 
-                exception: exception);
+                isSuccessful: exception == null,
+                exception: exception));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using TestFactory.Tests.Testdata;
 using Xunit;
@@ -17,7 +18,7 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldPartiallyFailIfLastStepFails()
+        public async Task ShouldPartiallyFailIfLastStepFails()
         {
             // Arrange
             var systemTestBuilder = new SystemTestBuilder()
@@ -26,7 +27,7 @@ namespace TestFactory.Tests
                 ;
 
             // Act
-            var testResult = systemTestBuilder.Run();
+            var testResult = await systemTestBuilder.Run();
 
             // Assert
             testResult.IsSuccessful.Should().BeFalse();
@@ -40,7 +41,7 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldPartiallyFailIfFirstStepFails()
+        public async Task ShouldPartiallyFailIfFirstStepFails()
         {
             // Arrange
             var systemTestBuilder = new SystemTestBuilder()
@@ -50,7 +51,7 @@ namespace TestFactory.Tests
                 ;
 
             // Act
-            var testResult = systemTestBuilder.Run();
+            var testResult = await systemTestBuilder.Run();
 
             // Assert
             testResult.IsSuccessful.Should().BeFalse();
@@ -64,7 +65,7 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldCatchUnhandledException()
+        public async Task ShouldCatchUnhandledException()
         {
             // Arrange
             var systemTestBuilder = new SystemTestBuilder()
@@ -72,7 +73,7 @@ namespace TestFactory.Tests
                     ;
 
             // Act
-            var testResult = systemTestBuilder.Run();
+            var testResult = await systemTestBuilder.Run();
 
             // Assert
             testResult.IsSuccessful.Should().BeFalse();
@@ -86,7 +87,7 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldRunNestedTests()
+        public async Task ShouldRunNestedTests()
         {
             // Arrange
             var systemTestBuilder = new SystemTestBuilder()
@@ -95,7 +96,7 @@ namespace TestFactory.Tests
                 ;
 
             // Act
-            var testResult = systemTestBuilder.Run();
+            var testResult = await systemTestBuilder.Run();
 
             // Assert
             testResult.IsSuccessful.Should().BeFalse();

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using TestFactory.TestSteps;
 using Xunit;
@@ -17,7 +18,7 @@ namespace TestFactory.Tests.TestSteps
         }
 
         [Fact]
-        public void ShouldCallActionOnRun()
+        public async Task ShouldCallActionOnRun()
         {
             // Arrange
             var actionCalled = false;
@@ -25,7 +26,7 @@ namespace TestFactory.Tests.TestSteps
             ITestStep actionTestStep = new ActionTestStep(action);
 
             // Act
-            ITestStepResult testStepResult = actionTestStep.Run();
+            ITestStepResult testStepResult = await actionTestStep.Run();
 
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());

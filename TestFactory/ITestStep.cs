@@ -1,7 +1,9 @@
-﻿namespace TestFactory
+﻿using System.Threading.Tasks;
+
+namespace TestFactory
 {
     public interface ITestStep
     {
-        ITestStepResult Run();
+        Task<ITestStepResult> Run();
     }
 }

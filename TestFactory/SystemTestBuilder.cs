@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace TestFactory
 {
@@ -20,7 +21,7 @@ namespace TestFactory
             return this;
         }
 
-        public ITestResult Run()
+        public async Task<ITestResult> Run()
         {
             var testStepResults = new List<ITestStepResult>();
             foreach (var testStep in this.testSteps)
@@ -30,7 +31,7 @@ namespace TestFactory
                 try
                 {
                     stopwatch.Start();
-                    var testStepResult = testStep.Run();
+                    var testStepResult = await testStep.Run().ConfigureAwait(false);
                     stopwatch.Stop();
 
                     testStepResults.Add(testStepResult);
