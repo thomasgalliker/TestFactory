@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using TestFactory.Extensions;
 
 namespace TestFactory
 {
     [DebuggerDisplay("TestResult: IsSuccessful={this.IsSuccessful}, Duration={this.Duration}")]
     public class TestResult : ITestResult
     {
-        private static readonly string Intent = FormattingHelper.Indent(8);
+        private readonly ITestStepResult[] testStepResults;
 
         public TestResult(params ITestStepResult[] testStepResults)
         {
@@ -23,13 +23,13 @@ namespace TestFactory
                 throw new ArgumentException("Must have at least 1 test step result.", nameof(testStepResults));
             }
 
-            this.TestStepResults = testStepResults;
+            this.testStepResults = testStepResults;
             this.IsSuccessful = this.TestStepResults.All(r => r.IsSuccessful);
             this.Exception = new AggregateException(this.TestStepResults.Where(r => r.Exception != null).Select(r => r.Exception));
             this.Duration = testStepResults.Sum(r => r.Duration.GetValueOrDefault());
         }
 
-        public ITestStepResult[] TestStepResults { get; }
+        public IEnumerable<ITestStepResult> TestStepResults => this.testStepResults;
 
         public bool IsSuccessful { get; }
 
@@ -81,7 +81,7 @@ namespace TestFactory
                 stringBuilder.AppendLine();
                 stringBuilder.AppendLine($"Overall success: {this.IsSuccessful}");
                 stringBuilder.AppendLine($"Overall duration: {this.Duration}");
-                stringBuilder.AppendLine($"Number of test steps: {this.TestStepResults.Length} (successful: {this.TestStepResults.Count(r => r.IsSuccessful)} / failed: {this.TestStepResults.Count(r => !r.IsSuccessful)})");
+                stringBuilder.AppendLine($"Number of test steps: {this.testStepResults.Length} (successful: {this.testStepResults.Count(r => r.IsSuccessful)} / failed: {this.testStepResults.Count(r => !r.IsSuccessful)})");
                 stringBuilder.AppendLine();
 
                 if (format == Formats.SummaryOnly)
