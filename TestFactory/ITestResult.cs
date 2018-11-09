@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TestFactory
 {
     public interface ITestResult : IFormattable
     {
-        ITestStepResult[] TestStepResults { get; }
+        IEnumerable<ITestStepResult> TestStepResults { get; }
 
         bool IsSuccessful { get; }
 
