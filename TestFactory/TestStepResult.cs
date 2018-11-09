@@ -10,33 +10,38 @@ namespace TestFactory
     {
         private static readonly string Intent = FormattingHelper.Indent(8);
 
-        private readonly bool isSuccessful;
-
-        public TestStepResult(ITestStep testStep, bool isSuccessful)
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful) 
+            : this(testStep, duration, isSuccessful, result: null)
         {
-            this.TestStep = testStep;
-            this.isSuccessful = isSuccessful;
         }
 
-        public TestStepResult(ITestStep testStep, object result = null)
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, object result) 
+            : this(testStep, duration, isSuccessful, result: result, exception: null)
+        {
+        }
+
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, Exception exception) 
+            : this(testStep, duration, isSuccessful, result: null, exception: exception)
+        {
+        }
+
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, object result, Exception exception)
         {
             this.TestStep = testStep;
+            this.IsSuccessful = isSuccessful;
             this.Result = result;
-        }
-
-        public TestStepResult(ITestStep testStep, ITestResult nestedTestResult)
-        {
-            this.TestStep = testStep;
-            this.Result = nestedTestResult;
-            this.isSuccessful = nestedTestResult.IsSuccessful;
-            this.Exception = nestedTestResult.Exception;
-            this.Duration = nestedTestResult.Duration;
-        }
-
-        public TestStepResult(ITestStep testStep, Exception exception)
-        {
-            this.TestStep = testStep;
             this.Exception = exception;
+            this.Duration = duration;
+        }
+
+        public TestStepResult(ITestStep testStep, ITestResult nestedTestResult) 
+            : this(testStep, isSuccessful: nestedTestResult.IsSuccessful, result: nestedTestResult, exception: nestedTestResult.Exception, duration: nestedTestResult.Duration)
+        {
+        }
+
+        public TestStepResult(ITestStep testStep, Exception exception, TimeSpan? duration)
+            : this(testStep, isSuccessful: false, result: null, exception: exception, duration: duration)
+        {
         }
 
         public object Result { get; }
@@ -45,12 +50,9 @@ namespace TestFactory
 
         public ITestStep TestStep { get; }
 
-        public bool IsSuccessful
-        {
-            get { return this.isSuccessful || this.Exception == null; }
-        }
+        public bool IsSuccessful { get; }
 
-        public TimeSpan? Duration { get; internal set; }
+        public TimeSpan? Duration { get; }
 
         public override string ToString()
         {
