@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using TestFactory.Extensions;
 
 namespace TestFactory
 {
     [DebuggerDisplay("TestResult: IsSuccessful={this.IsSuccessful}, Duration={this.Duration}")]
     public class TestResult : ITestResult
     {
+        private readonly ITestStepResult[] testStepResults;
+
         public TestResult(params ITestStepResult[] testStepResults)
         {
             if (testStepResults == null)
@@ -21,13 +23,13 @@ namespace TestFactory
                 throw new ArgumentException("Must have at least 1 test step result.", nameof(testStepResults));
             }
 
-            this.TestStepResults = testStepResults;
+            this.testStepResults = testStepResults;
             this.IsSuccessful = this.TestStepResults.All(r => r.IsSuccessful);
             this.Exception = new AggregateException(this.TestStepResults.Where(r => r.Exception != null).Select(r => r.Exception));
             this.Duration = testStepResults.Sum(r => r.Duration.GetValueOrDefault());
         }
 
-        public ITestStepResult[] TestStepResults { get; }
+        public IEnumerable<ITestStepResult> TestStepResults => this.testStepResults;
 
         public bool IsSuccessful { get; }
 
@@ -35,42 +37,33 @@ namespace TestFactory
 
         public TimeSpan Duration { get; }
 
-        private static string Indent(int count)
-        {
-            return "".PadLeft(count);
-        }
-
-        private static readonly string Intent = Indent(8);
-
-
-
         /// <summary>
-        /// Returns the string representation of <see cref="TestResult"/>.
+        ///     Returns the string representation of <see cref="TestResult" />.
         /// </summary>
-        /// <returns>The string representation of <see cref="TestResult"/></returns>
+        /// <returns>The string representation of <see cref="TestResult" /></returns>
         public override string ToString()
         {
             return this.ToString(Formats.Full);
         }
 
         /// <summary>
-        /// Returns the string representation of <see cref="TestResult"/>.
-        /// Use <see cref="Formats"/> to select a specific formatting.
+        ///     Returns the string representation of <see cref="TestResult" />.
+        ///     Use <see cref="Formats" /> to select a specific formatting.
         /// </summary>
         /// <param name="format">Formatting of the string representation.</param>
-        /// <returns>The string representation of <see cref="TestResult"/></returns>
+        /// <returns>The string representation of <see cref="TestResult" /></returns>
         public string ToString(string format)
         {
             return this.ToString(format, null);
         }
 
         /// <summary>
-        /// Returns the string representation of <see cref="TestResult"/>.
-        /// Use <see cref="Formats"/> to select a specific formatting.
+        ///     Returns the string representation of <see cref="TestResult" />.
+        ///     Use <see cref="Formats" /> to select a specific formatting.
         /// </summary>
         /// <param name="format">Formatting of the string representation.</param>
         /// <param name="provider">(Not implemented)</param>
-        /// <returns>The string representation of <see cref="TestResult"/></returns>
+        /// <returns>The string representation of <see cref="TestResult" /></returns>
         public string ToString(string format, IFormatProvider provider)
         {
             if (string.IsNullOrEmpty(format))
@@ -78,48 +71,31 @@ namespace TestFactory
                 format = Formats.Full;
             }
 
-            var stringBulider = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
             if (format == Formats.Full || format == Formats.SummaryOnly)
             {
-                stringBulider.AppendLine();
-                stringBulider.AppendLine("Test Result Summary:");
-                stringBulider.AppendLine("--------------------");
-                stringBulider.AppendLine();
-                stringBulider.AppendLine($"Overall success: {this.IsSuccessful}");
-                stringBulider.AppendLine($"Overall duration: {this.Duration}");
-                stringBulider.AppendLine($"Number of test steps: {this.TestStepResults.Length} (successful: {this.TestStepResults.Count(r => r.IsSuccessful)} / failed: {this.TestStepResults.Count(r => !r.IsSuccessful)})");
-                stringBulider.AppendLine();
+                stringBuilder.AppendLine();
+                stringBuilder.AppendLine("Test Result Summary:");
+                stringBuilder.AppendLine("--------------------");
+                stringBuilder.AppendLine();
+                stringBuilder.AppendLine($"Overall success: {this.IsSuccessful}");
+                stringBuilder.AppendLine($"Overall duration: {this.Duration}");
+                stringBuilder.AppendLine($"Number of test steps: {this.testStepResults.Length} (successful: {this.testStepResults.Count(r => r.IsSuccessful)} / failed: {this.testStepResults.Count(r => !r.IsSuccessful)})");
+                stringBuilder.AppendLine();
 
                 if (format == Formats.SummaryOnly)
                 {
-                    return stringBulider.ToString();
+                    return stringBuilder.ToString();
                 }
             }
 
             foreach (var testStepResult in this.TestStepResults)
             {
-                stringBulider.AppendLine($"-> {testStepResult.TestStep.GetType().GetFormattedName()}:\t\t\tIsSuccessful = {testStepResult.IsSuccessful},\t\t\tDuration = {testStepResult.Duration}");
-                if (testStepResult.IsSuccessful == false)
-                {
-                    stringBulider.Append($"{Intent}{testStepResult.Exception.ToString().Replace("\n", "\n" + Intent)}");
-                    stringBulider.AppendLine();
-                    stringBulider.AppendLine();
-                }
-
-                var nestedTestResult = testStepResult.Result as TestResult;
-                if (nestedTestResult != null)
-                {
-                    var nestedString = nestedTestResult.ToString(Formats.Compact);
-                    foreach (var line in nestedString.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None))
-                    {
-                        stringBulider.AppendLine($"{Intent}{line}");
-                    }
-                    stringBulider.AppendLine();
-                }
+                stringBuilder.AppendLine(testStepResult.ToString());
             }
 
-            return stringBulider.ToString();
+            return stringBuilder.ToString();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace TestFactory
 {
-    public interface ITestStepResult
+    public interface ITestStepResult : IFormattable
     {
         ITestStep TestStep { get; }
 

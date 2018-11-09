@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using TestFactory.Tests.Testdata;
 using Xunit;
@@ -16,21 +18,22 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldPartiallyFailIfLastStepFails()
+        public async Task ShouldPartiallyFailIfLastStepFails()
         {
             // Arrange
             var systemTestBuilder = new SystemTestBuilder()
-                .AddTestStep(() => { })
-                .AddTestStep(() => { throw new Exception("Something failed"); })
+                    .AddTestStep(() => { })
+                    .AddTestStep(() => { throw new Exception("Something failed"); })
                 ;
 
             // Act
-            var testResult = systemTestBuilder.Run();
+            var testResult = await systemTestBuilder.Run();
 
             // Assert
             testResult.IsSuccessful.Should().BeFalse();
-            testResult.TestStepResults[0].IsSuccessful.Should().BeTrue();
-            testResult.TestStepResults[1].IsSuccessful.Should().BeFalse();
+            testResult.TestStepResults.Should().HaveCount(2);
+            testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeTrue();
+            testResult.TestStepResults.ElementAt(1).IsSuccessful.Should().BeFalse();
             testResult.Exception.InnerExceptions.Should().HaveCount(1);
             testResult.Exception.InnerExceptions[0].Message.Should().Contain("Something failed");
 
@@ -38,22 +41,23 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldPartiallyFailIfFirstStepFails()
+        public async Task ShouldPartiallyFailIfFirstStepFails()
         {
             // Arrange
             var systemTestBuilder = new SystemTestBuilder()
-                .AddTestStep(() => { throw new Exception("Something failed"); })
-                .AddTestStep(() => { })
-                .AddTestStep(() => { })
+                    .AddTestStep(() => { throw new Exception("Something failed"); })
+                    .AddTestStep(() => { })
+                    .AddTestStep(() => { })
                 ;
 
             // Act
-            var testResult = systemTestBuilder.Run();
+            var testResult = await systemTestBuilder.Run();
 
             // Assert
             testResult.IsSuccessful.Should().BeFalse();
-            testResult.TestStepResults[0].IsSuccessful.Should().BeFalse();
-            testResult.TestStepResults[1].IsSuccessful.Should().BeTrue();
+            testResult.TestStepResults.Should().HaveCount(3);
+            testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeFalse();
+            testResult.TestStepResults.ElementAt(1).IsSuccessful.Should().BeTrue();
             testResult.Exception.InnerExceptions.Should().HaveCount(1);
             testResult.Exception.InnerExceptions[0].Message.Should().Contain("Something failed");
 
@@ -61,21 +65,44 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldRunNestedTests()
+        public async Task ShouldCatchUnhandledException()
         {
             // Arrange
             var systemTestBuilder = new SystemTestBuilder()
-                .AddTestStep(new NestedTestStep())
-                .AddTestStep(new NestedTestStep())
-                ;
+                    .AddTestStep(new UnhandledExceptionTestStep())
+                    ;
 
             // Act
-            var testResult = systemTestBuilder.Run();
+            var testResult = await systemTestBuilder.Run();
 
             // Assert
             testResult.IsSuccessful.Should().BeFalse();
-            testResult.TestStepResults[0].Result.Should().NotBeNull();
-            testResult.TestStepResults[1].Result.Should().NotBeNull();
+            testResult.TestStepResults.Should().HaveCount(1);
+            testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeFalse();
+            testResult.Exception.InnerExceptions.Should().HaveCount(1);
+            testResult.Exception.InnerExceptions[0].Message.Should().Contain("An unhandled exception occurred");
+            testResult.Exception.InnerExceptions[0].Should().BeOfType<InvalidOperationException>();
+
+            this.testOutputHelper.WriteLine(testResult.ToString());
+        }
+
+        [Fact]
+        public async Task ShouldRunNestedTests()
+        {
+            // Arrange
+            var systemTestBuilder = new SystemTestBuilder()
+                    .AddTestStep(new NestedTestStep())
+                    .AddTestStep(new NestedTestStep())
+                ;
+
+            // Act
+            var testResult = await systemTestBuilder.Run();
+
+            // Assert
+            testResult.IsSuccessful.Should().BeFalse();
+            testResult.TestStepResults.Should().HaveCount(2);
+            testResult.TestStepResults.ElementAt(0).Result.Should().NotBeNull();
+            testResult.TestStepResults.ElementAt(1).Result.Should().NotBeNull();
 
             this.testOutputHelper.WriteLine(testResult.ToString());
         }

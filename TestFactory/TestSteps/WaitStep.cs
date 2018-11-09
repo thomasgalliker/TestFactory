@@ -1,19 +1,41 @@
 ﻿
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+
 namespace TestFactory.TestSteps
 {
     public class WaitStep : ITestStep
     {
-        private readonly int time;
+        private readonly TimeSpan timeSpan;
 
-        public WaitStep(int time)
+        public WaitStep(TimeSpan timeSpan)
         {
-            this.time = time;
+            this.timeSpan = timeSpan;
         }
 
-        public ITestStepResult Run()
+        public WaitStep(int millisecondsTimeout)
         {
-            //Thread.Sleep(this.time);
-            return new TestStepResult(this);
+            this.timeSpan = TimeSpan.FromMilliseconds(millisecondsTimeout);
+        }
+
+        public Task<ITestStepResult> Run()
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var totalMilliseconds = (int)this.timeSpan.TotalMilliseconds;
+
+#if NETSTANDARD
+            System.Threading.Tasks.Task.Delay(totalMilliseconds).Wait();
+#else
+            System.Threading.Thread.Sleep(totalMilliseconds);
+#endif
+
+            stopwatch.Stop();
+            return Task.FromResult<ITestStepResult>(new TestStepResult(
+                testStep: this,
+                duration: stopwatch.Elapsed,
+                isSuccessful: true));
         }
     }
 }

@@ -2,11 +2,19 @@
 using FluentAssertions;
 using TestFactory.Tests.Testdata;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace TestFactory.Tests
 {
     public class TestResultTests
     {
+        private readonly ITestOutputHelper testOutputHelper;
+
+        public TestResultTests(ITestOutputHelper testOutputHelper)
+        {
+            this.testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void ShouldThrowException_MustHaveAtLeastOneResult()
         {
@@ -22,13 +30,14 @@ namespace TestFactory.Tests
         {
             // Arrange
             ITestStep testStep = new EmptyActionTestStep();
-            ITestStepResult testStepResult = new TestStepResult(testStep);
+            ITestStepResult testStepResult = TestStepResults.GetTestStepResult_Successful(testStep);
             ITestResult testResult = new TestResult(testStepResult);
 
             // Act
             var testResultString = testResult.ToString(Formats.Full, null);
 
             // Assert
+            this.testOutputHelper.WriteLine(testResultString);
             testResultString.Should().NotBeNullOrEmpty();
         }
 
@@ -37,13 +46,14 @@ namespace TestFactory.Tests
         {
             // Arrange
             ITestStep testStep = new EmptyActionTestStep();
-            ITestStepResult testStepResult = new TestStepResult(testStep);
+            ITestStepResult testStepResult = TestStepResults.GetTestStepResult_Successful(testStep);
             ITestResult testResult = new TestResult(testStepResult);
 
             // Act
             var testResultString = testResult.ToString(Formats.Compact, null);
 
             // Assert
+            this.testOutputHelper.WriteLine(testResultString);
             testResultString.Should().NotBeNullOrEmpty();
         }
 
@@ -52,13 +62,14 @@ namespace TestFactory.Tests
         {
             // Arrange
             ITestStep testStep = new EmptyActionTestStep();
-            ITestStepResult testStepResult = new TestStepResult(testStep);
+            ITestStepResult testStepResult = TestStepResults.GetTestStepResult_Successful(testStep);
             ITestResult testResult = new TestResult(testStepResult);
 
             // Act
             var testResultString = testResult.ToString(Formats.SummaryOnly, null);
 
             // Assert
+            this.testOutputHelper.WriteLine(testResultString);
             testResultString.Should().NotBeNullOrEmpty();
         }
     }

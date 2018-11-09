@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace TestFactory
 {
@@ -20,29 +21,25 @@ namespace TestFactory
             return this;
         }
 
-        public ITestResult Run()
+        public async Task<ITestResult> Run()
         {
             var testStepResults = new List<ITestStepResult>();
             foreach (var testStep in this.testSteps)
             {
+                var stopwatch = new Stopwatch();
+                
                 try
                 {
-                    var stopwatch = new Stopwatch();
                     stopwatch.Start();
-                    var testStepResult = testStep.Run();
+                    var testStepResult = await testStep.Run().ConfigureAwait(false);
                     stopwatch.Stop();
-
-                    var result = testStepResult as TestStepResult;
-                    if (result != null)
-                    {
-                        result.Duration = stopwatch.Elapsed;
-                    }
 
                     testStepResults.Add(testStepResult);
                 }
                 catch (Exception ex)
                 {
-                    testStepResults.Add(new TestStepResult(testStep, ex));
+                    stopwatch.Stop();
+                    testStepResults.Add(new TestStepResult(testStep, ex, stopwatch.Elapsed));
                 }
             }
 
