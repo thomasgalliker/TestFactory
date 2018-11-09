@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Diagnostics;
 
 namespace TestFactory.TestSteps
 {
@@ -19,12 +20,21 @@ namespace TestFactory.TestSteps
 
         public ITestStepResult Run()
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var totalMilliseconds = (int)this.timeSpan.TotalMilliseconds;
+
 #if NETSTANDARD
-            System.Threading.Tasks.Task.Delay(this.timeSpan.Milliseconds).Wait();
+            System.Threading.Tasks.Task.Delay(totalMilliseconds).Wait();
 #else
-            System.Threading.Thread.Sleep(this.timeSpan.Milliseconds);
+            System.Threading.Thread.Sleep(totalMilliseconds);
 #endif
-            return new TestStepResult(this);
+
+            stopwatch.Stop();
+            return new TestStepResult(
+                testStep: this,
+                duration: stopwatch.Elapsed,
+                isSuccessful: true);
         }
     }
 }
