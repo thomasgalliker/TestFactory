@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace TestFactory.TestSteps
 {
-    public class ActionTestStep : ITestStep
+    public class FuncTestStep<TOut> : ITestStep
     {
-        private readonly Action action;
+        private readonly Func<TOut> func;
 
-        public ActionTestStep(Action action)
+        public FuncTestStep(Func<TOut> func)
         {
-            this.action = action;
+            this.func = func;
         }
 
         public Task<ITestStepResult> Run()
@@ -18,10 +18,11 @@ namespace TestFactory.TestSteps
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            var result = default(TOut);
             Exception exception = null;
             try
             {
-                this.action();
+                result = this.func();
             }
             catch (Exception ex)
             {
@@ -33,6 +34,7 @@ namespace TestFactory.TestSteps
                 testStep: this,
                 duration: stopwatch.Elapsed,
                 isSuccessful: exception == null,
+                result: result,
                 exception: exception));
         }
     }
