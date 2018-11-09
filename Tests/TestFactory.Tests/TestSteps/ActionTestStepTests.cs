@@ -30,7 +30,7 @@ namespace TestFactory.Tests.TestSteps
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
             testStepResult.Should().NotBeNull();
-            //testStepResult.Duration.Should().BeGreaterOrEqualTo(timeSpan);
+            testStepResult.IsSuccessful.Should().BeTrue();
 
             actionCalled.Should().BeTrue();
         }

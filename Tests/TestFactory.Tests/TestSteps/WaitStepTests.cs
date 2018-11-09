@@ -16,7 +16,7 @@ namespace TestFactory.Tests.TestSteps
         }
 
         [Fact]
-        public void ShouldWaitOnWaitStepRun()
+        public void ShouldWaitOnWaitStepRun_FromTimeSpan()
         {
             // Arrange
             var timeSpan = new TimeSpan(0, 0, 1);
@@ -28,7 +28,23 @@ namespace TestFactory.Tests.TestSteps
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
             testStepResult.Should().NotBeNull();
-            //testStepResult.Duration.Should().BeGreaterOrEqualTo(timeSpan);
+            testStepResult.Duration.Should().BeGreaterOrEqualTo(timeSpan);
+        }
+
+        [Fact]
+        public void ShouldWaitOnWaitStepRun_FromMilliseconds()
+        {
+            // Arrange
+            const int milliseconds = 999;
+            ITestStep waitStep = new WaitStep(milliseconds);
+
+            // Act
+            ITestStepResult testStepResult = waitStep.Run();
+
+            // Assert
+            this.testOutputHelper.WriteLine(testStepResult.ToString());
+            testStepResult.Should().NotBeNull();
+            testStepResult.Duration.Should().BeGreaterOrEqualTo(TimeSpan.FromMilliseconds(milliseconds));
         }
     }
 }
