@@ -18,13 +18,12 @@ You can use this library in any .Net project which is compatible to PCL (e.g. Xa
 The following code excerpt shows how TestFactory can be used to orchestrate a collection of independent test steps:
 ```C#
     // Setup test steps
-    var systemTestBuilder = new SystemTestBuilder()
-        .AddTestStep(() => { })
-        .AddTestStep(() => { throw new Exception("Something failed"); })
-        ;
+     var systemTestBuilder = new SystemTestBuilder()
+            .AddTestStep(() => { })
+            .AddTestStep(() => { throw new Exception("Something failed"); });
 
-    // Run tests
-    var testResult = systemTestBuilder.Run();
+    // Run test suite
+    var testResult = await systemTestBuilder.Run();
 
     // Assert test result
     testResult.IsSuccessful.Should().BeFalse();
