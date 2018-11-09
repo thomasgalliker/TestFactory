@@ -30,7 +30,7 @@ namespace TestFactory.Tests
         {
             // Arrange
             ITestStep testStep = new EmptyActionTestStep();
-            ITestStepResult testStepResult = new TestStepResult(testStep);
+            ITestStepResult testStepResult = TestStepResults.GetTestStepResult_Successful(testStep);
             ITestResult testResult = new TestResult(testStepResult);
 
             // Act
@@ -46,7 +46,7 @@ namespace TestFactory.Tests
         {
             // Arrange
             ITestStep testStep = new EmptyActionTestStep();
-            ITestStepResult testStepResult = new TestStepResult(testStep);
+            ITestStepResult testStepResult = TestStepResults.GetTestStepResult_Successful(testStep);
             ITestResult testResult = new TestResult(testStepResult);
 
             // Act
@@ -62,7 +62,7 @@ namespace TestFactory.Tests
         {
             // Arrange
             ITestStep testStep = new EmptyActionTestStep();
-            ITestStepResult testStepResult = new TestStepResult(testStep);
+            ITestStepResult testStepResult = TestStepResults.GetTestStepResult_Successful(testStep);
             ITestResult testResult = new TestResult(testStepResult);
 
             // Act
