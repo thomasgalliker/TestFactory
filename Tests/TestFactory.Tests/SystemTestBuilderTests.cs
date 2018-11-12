@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using TestFactory.Tests.Testdata;
@@ -103,6 +104,35 @@ namespace TestFactory.Tests
             testResult.TestStepResults.Should().HaveCount(2);
             testResult.TestStepResults.ElementAt(0).Result.Should().NotBeNull();
             testResult.TestStepResults.ElementAt(1).Result.Should().NotBeNull();
+
+            this.testOutputHelper.WriteLine(testResult.ToString());
+        }
+
+        [Fact]
+        public async Task ShouldRunTestStepsInParallel()
+        {
+            // Arrange
+            var oneSecond = TimeSpan.FromSeconds(1);
+            var systemTestBuilder = new SystemTestBuilder()
+                    .AddTestStepAsync(async () => { await Task.Delay(1000); this.testOutputHelper.WriteLine($"Step1 (sync) finished on Thread {Thread.CurrentThread.ManagedThreadId}"); })
+                    .AddTestStepAsync(async () => { await Task.Delay(1000); this.testOutputHelper.WriteLine($"Step2 (sync) finished on Thread {Thread.CurrentThread.ManagedThreadId}"); })
+                    .AddParallelTestStep(
+                        async () => { await Task.Delay(1000); this.testOutputHelper.WriteLine($"Step3 (async) finished on Thread {Thread.CurrentThread.ManagedThreadId}"); },
+                        async () => { await Task.Delay(1000); this.testOutputHelper.WriteLine($"Step4 (async) finished on Thread {Thread.CurrentThread.ManagedThreadId}"); },
+                        async () => { await Task.Delay(1000); this.testOutputHelper.WriteLine($"Step5 (async) finished on Thread {Thread.CurrentThread.ManagedThreadId}"); },
+                        async () => { await Task.Delay(1000); this.testOutputHelper.WriteLine($"Step6 (async) finished on Thread {Thread.CurrentThread.ManagedThreadId}"); },
+                        async () => { await Task.Delay(1000); this.testOutputHelper.WriteLine($"Step7 (async) finished on Thread {Thread.CurrentThread.ManagedThreadId}"); })
+                ;
+
+            // Act
+            var testResult = await systemTestBuilder.Run();
+
+            // Assert
+            testResult.IsSuccessful.Should().BeTrue();
+            testResult.TestStepResults.Should().HaveCount(3);
+            testResult.TestStepResults.ElementAt(0).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(100));
+            testResult.TestStepResults.ElementAt(1).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(100));
+            testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
 
             this.testOutputHelper.WriteLine(testResult.ToString());
         }
