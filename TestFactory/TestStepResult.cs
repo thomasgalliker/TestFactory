@@ -59,7 +59,7 @@ namespace TestFactory
             return this.ToString(null, null);
         }
 
-        public string ToString(string format, IFormatProvider formatProvider)
+        public virtual string ToString(string format, IFormatProvider formatProvider)
         {
             var stringBuilder = new StringBuilder();
 
