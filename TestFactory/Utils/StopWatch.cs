@@ -29,6 +29,6 @@ namespace TestFactory.Utils
             this.callback?.Invoke(this.Result);
         }
 
-        public TimeSpan Result => this.stopwatch.Elapsed;
+        public TimeSpan Elapsed => this.stopwatch.Elapsed;
     }
 }
