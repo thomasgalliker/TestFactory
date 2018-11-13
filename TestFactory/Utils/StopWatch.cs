@@ -26,9 +26,9 @@ namespace TestFactory.Utils
         public void Dispose()
         {
             this.stopwatch.Stop();
-            this.callback?.Invoke(this.Result);
+            this.callback?.Invoke(this.Elapsed);
         }
 
-        public TimeSpan Result => this.stopwatch.Elapsed;
+        public TimeSpan Elapsed => this.stopwatch.Elapsed;
     }
 }
