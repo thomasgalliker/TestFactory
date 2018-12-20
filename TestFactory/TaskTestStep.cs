@@ -8,10 +8,13 @@ namespace TestFactory
     {
         private readonly Func<Task> taskFunc;
 
-        public TaskTestStep(Func<Task> taskFunc)
+        public TaskTestStep(Func<Task> taskFunc, string name = nameof(TaskTestStep))
         {
             this.taskFunc = taskFunc;
+            this.Name = name;
         }
+
+        public string Name { get; }
 
         public async Task<ITestStepResult> Run()
         {

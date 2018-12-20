@@ -8,10 +8,13 @@ namespace TestFactory.TestSteps
     {
         private readonly Action action;
 
-        public ActionTestStep(Action action)
+        public ActionTestStep(Action action, string name = nameof(ActionTestStep))
         {
+            this.Name = name;
             this.action = action;
         }
+
+        public string Name { get; }
 
         public Task<ITestStepResult> Run()
         {

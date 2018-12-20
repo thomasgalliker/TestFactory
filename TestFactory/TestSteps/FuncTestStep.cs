@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TestFactory.Extensions;
 
 namespace TestFactory.TestSteps
 {
@@ -8,10 +9,13 @@ namespace TestFactory.TestSteps
     {
         private readonly Func<TOut> func;
 
-        public FuncTestStep(Func<TOut> func)
+        public FuncTestStep(Func<TOut> func, string name = null)
         {
             this.func = func;
+            this.Name = name ?? this.GetType().GetFormattedName();
         }
+
+        public string Name { get; }
 
         public Task<ITestStepResult> Run()
         {

@@ -10,17 +10,17 @@ namespace TestFactory
     {
         private static readonly string Intent = FormattingHelper.Indent(8);
 
-        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful) 
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful)
             : this(testStep, duration, isSuccessful, result: null)
         {
         }
 
-        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, object result) 
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, object result)
             : this(testStep, duration, isSuccessful, result: result, exception: null)
         {
         }
 
-        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, Exception exception) 
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, Exception exception)
             : this(testStep, duration, isSuccessful, result: null, exception: exception)
         {
         }
@@ -34,7 +34,7 @@ namespace TestFactory
             this.Duration = duration;
         }
 
-        public TestStepResult(ITestStep testStep, ITestResult nestedTestResult) 
+        public TestStepResult(ITestStep testStep, ITestResult nestedTestResult)
             : this(testStep, isSuccessful: nestedTestResult.IsSuccessful, result: nestedTestResult, exception: nestedTestResult.Exception, duration: nestedTestResult.Duration)
         {
         }
@@ -63,7 +63,7 @@ namespace TestFactory
         {
             var stringBuilder = new StringBuilder();
 
-            stringBuilder.AppendLine($"-> {this.TestStep.GetType().GetFormattedName()}:\t\t\tIsSuccessful = {this.IsSuccessful},\t\t\tDuration = {this.Duration}");
+            stringBuilder.AppendLine($"-> {this.TestStep.Name}:\t\t\tIsSuccessful = {this.IsSuccessful},\t\t\tDuration = {this.Duration}");
             if (this.IsSuccessful == false)
             {
                 stringBuilder.Append($"{Intent}{this.Exception.ToString().Replace("\n", "\n" + Intent)}");

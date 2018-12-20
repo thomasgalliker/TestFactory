@@ -9,15 +9,18 @@ namespace TestFactory.TestSteps
     {
         private readonly TimeSpan timeSpan;
 
-        public WaitStep(TimeSpan timeSpan)
+        public WaitStep(TimeSpan timeSpan, string name = nameof(WaitStep))
         {
             this.timeSpan = timeSpan;
+            this.Name = name;
         }
 
         public WaitStep(int millisecondsTimeout)
         {
             this.timeSpan = TimeSpan.FromMilliseconds(millisecondsTimeout);
         }
+
+        public string Name { get; }
 
         public Task<ITestStepResult> Run()
         {

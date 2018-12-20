@@ -11,10 +11,13 @@ namespace TestFactory
     {
         public IEnumerable<TaskTestStep> TestSteps { get; }
 
-        public ParallelTestStep(IEnumerable<TaskTestStep> parallelTestSteps)
+        public ParallelTestStep(IEnumerable<TaskTestStep> parallelTestSteps, string name = nameof(ParallelTestStep))
         {
             this.TestSteps = parallelTestSteps;
+            this.Name = name;
         }
+
+        public string Name { get; }
 
         public async Task<ITestStepResult> Run()
         {
