@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace TestFactory
 {
-    [DebuggerDisplay("ParallelTestStep: {this.TestSteps}")]
+    [DebuggerDisplay("ParallelTestStep: {this.TestSteps.Count()}")]
     public class ParallelTestStep : ITestStep
     {
-        public IEnumerable<TaskTestStep> TestSteps { get; }
+        public IEnumerable<ITestStep> TestSteps { get; }
 
-        public ParallelTestStep(IEnumerable<TaskTestStep> parallelTestSteps, string name = nameof(ParallelTestStep))
+        public ParallelTestStep(IEnumerable<ITestStep> parallelTestSteps, string name = nameof(ParallelTestStep))
         {
             this.TestSteps = parallelTestSteps;
             this.Name = name;
@@ -27,7 +27,7 @@ namespace TestFactory
             ITestStepResult[] testStepResults = null;
             try
             {
-                testStepResults = await Task.WhenAll(this.TestSteps.Select(ts => ts.Run()));
+                testStepResults = await Task.WhenAll(this.TestSteps.Select(testStep => testStep.Run()));
             }
             catch (Exception ex)
             {
