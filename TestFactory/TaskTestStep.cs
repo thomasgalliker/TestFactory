@@ -6,11 +6,11 @@ namespace TestFactory
 {
     public class TaskTestStep : ITestStep
     {
-        private readonly Func<Task> taskFunc;
+        private readonly Func<Task> createTask;
 
-        public TaskTestStep(Func<Task> taskFunc, string name = nameof(TaskTestStep))
+        public TaskTestStep(Func<Task> createTask, string name = nameof(TaskTestStep))
         {
-            this.taskFunc = taskFunc;
+            this.createTask = createTask;
             this.Name = name;
         }
 
@@ -23,7 +23,7 @@ namespace TestFactory
             Exception exception = null;
             try
             {
-                var task = this.taskFunc();
+                var task = this.createTask();
                 await task.ConfigureAwait(false);
             }
             catch (Exception ex)
