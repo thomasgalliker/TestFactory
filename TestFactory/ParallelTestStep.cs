@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TestFactory.Extensions;
 
 namespace TestFactory
 {
@@ -11,10 +12,10 @@ namespace TestFactory
     {
         public IEnumerable<ITestStep> TestSteps { get; }
 
-        public ParallelTestStep(IEnumerable<ITestStep> parallelTestSteps, string name = nameof(ParallelTestStep))
+        public ParallelTestStep(IEnumerable<ITestStep> parallelTestSteps, string name = null)
         {
             this.TestSteps = parallelTestSteps;
-            this.Name = name;
+            this.Name = name ?? this.GetType().GetFormattedName();
         }
 
         public string Name { get; }

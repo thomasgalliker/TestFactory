@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TestFactory.Extensions;
 
 namespace TestFactory
 {
@@ -8,10 +9,10 @@ namespace TestFactory
     {
         private readonly Func<Task> createTask;
 
-        public TaskTestStep(Func<Task> createTask, string name = nameof(TaskTestStep))
+        public TaskTestStep(Func<Task> createTask, string name = null)
         {
             this.createTask = createTask;
-            this.Name = name;
+            this.Name = name ?? this.GetType().GetFormattedName();
         }
 
         public string Name { get; }

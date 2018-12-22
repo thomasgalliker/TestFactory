@@ -3,26 +3,22 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace TestFactory.TestSteps
+namespace TestFactory
 {
-    public class WaitStep : ITestStep
+    public class WaitStep : TestStepBase
     {
         private readonly TimeSpan timeSpan;
 
-        public WaitStep(TimeSpan timeSpan, string name = nameof(WaitStep))
+        public WaitStep(TimeSpan timeSpan, string name = null) : base(name)
         {
             this.timeSpan = timeSpan;
-            this.Name = name;
         }
 
-        public WaitStep(int millisecondsTimeout)
+        public WaitStep(int millisecondsTimeout, string name = null) : this(TimeSpan.FromMilliseconds(millisecondsTimeout), name)
         {
-            this.timeSpan = TimeSpan.FromMilliseconds(millisecondsTimeout);
         }
 
-        public string Name { get; }
-
-        public Task<ITestStepResult> Run()
+        public override Task<ITestStepResult> Run()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();

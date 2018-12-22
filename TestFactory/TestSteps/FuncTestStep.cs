@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using TestFactory.Extensions;
 
-namespace TestFactory.TestSteps
+namespace TestFactory
 {
-    public class FuncTestStep<TOut> : ITestStep
+    public class FuncTestStep<TOut> : TestStepBase
     {
         private readonly Func<TOut> func;
 
-        public FuncTestStep(Func<TOut> func, string name = null)
+        public FuncTestStep(Func<TOut> func, string name = null) : base(name)
         {
             this.func = func;
-            this.Name = name ?? this.GetType().GetFormattedName();
         }
 
-        public string Name { get; }
-
-        public Task<ITestStepResult> Run()
+        public override Task<ITestStepResult> Run()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();

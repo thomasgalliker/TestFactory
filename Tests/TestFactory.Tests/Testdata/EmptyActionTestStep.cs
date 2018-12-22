@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TestFactory.TestSteps;
-
-namespace TestFactory.Tests.Testdata
+﻿namespace TestFactory.Tests.Testdata
 {
     public class EmptyActionTestStep : ActionTestStep
     {

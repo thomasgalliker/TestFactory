@@ -71,8 +71,7 @@ namespace TestFactory
                 stringBuilder.AppendLine();
             }
 
-            var nestedTestResult = this.Result as TestResult;
-            if (nestedTestResult != null)
+            if (this.Result is TestResult nestedTestResult)
             {
                 var nestedString = nestedTestResult.ToString(Formats.Compact);
                 foreach (var line in nestedString.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None))
