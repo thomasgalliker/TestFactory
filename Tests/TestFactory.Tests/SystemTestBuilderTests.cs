@@ -31,14 +31,14 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.Should().HaveCount(2);
             testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeTrue();
             testResult.TestStepResults.ElementAt(1).IsSuccessful.Should().BeFalse();
             testResult.Exception.InnerExceptions.Should().HaveCount(1);
             testResult.Exception.InnerExceptions[0].Message.Should().Contain("Something failed");
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
 
         [Fact]
@@ -55,14 +55,14 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.Should().HaveCount(3);
             testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.ElementAt(1).IsSuccessful.Should().BeTrue();
             testResult.Exception.InnerExceptions.Should().HaveCount(1);
             testResult.Exception.InnerExceptions[0].Message.Should().Contain("Something failed");
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
 
         [Fact]
@@ -77,14 +77,14 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.Should().HaveCount(1);
             testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeFalse();
             testResult.Exception.InnerExceptions.Should().HaveCount(1);
             testResult.Exception.InnerExceptions[0].Message.Should().Contain("An unhandled exception occurred");
             testResult.Exception.InnerExceptions[0].Should().BeOfType<InvalidOperationException>();
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
 
         [Fact]
@@ -100,12 +100,12 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.Should().HaveCount(2);
             testResult.TestStepResults.ElementAt(0).Result.Should().NotBeNull();
             testResult.TestStepResults.ElementAt(1).Result.Should().NotBeNull();
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
 
         [Fact]
@@ -128,13 +128,13 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeTrue();
             testResult.TestStepResults.Should().HaveCount(3);
             testResult.TestStepResults.ElementAt(0).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
             testResult.TestStepResults.ElementAt(1).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
             testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
     }
 }
