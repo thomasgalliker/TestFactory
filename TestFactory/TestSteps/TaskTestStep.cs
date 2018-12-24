@@ -5,19 +5,16 @@ using TestFactory.Extensions;
 
 namespace TestFactory
 {
-    public class TaskTestStep : ITestStep
+    public class TaskTestStep : TestStepBase
     {
         private readonly Func<Task> createTask;
 
-        public TaskTestStep(Func<Task> createTask, string name = null)
+        public TaskTestStep(Func<Task> createTask, string name = null) : base(name)
         {
             this.createTask = createTask;
-            this.Name = name ?? this.GetType().GetFormattedName();
         }
 
-        public string Name { get; }
-
-        public async Task<ITestStepResult> Run()
+        public override async Task<ITestStepResult> Run()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
