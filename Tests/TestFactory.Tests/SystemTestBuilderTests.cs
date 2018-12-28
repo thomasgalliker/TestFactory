@@ -133,9 +133,9 @@ namespace TestFactory.Tests
 
             testResult.IsSuccessful.Should().BeTrue();
             testResult.TestStepResults.Should().HaveCount(3);
-            testResult.TestStepResults.ElementAt(0).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
-            testResult.TestStepResults.ElementAt(1).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
-            testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
+            testResult.TestStepResults.ElementAt(0).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
+            testResult.TestStepResults.ElementAt(1).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
+            testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(400));
         }
 
         [Fact]
@@ -162,7 +162,7 @@ namespace TestFactory.Tests
             testResult.TestStepResults.Should().HaveCount(1);
             var testStepResult0 = testResult.TestStepResults.ElementAt(0).As<ParallelTestStepResult>();
             testStepResult0.Should().NotBeNull();
-            testStepResult0.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
+            testStepResult0.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
             testStepResult0.TestStepResults.Should().HaveCount(5);
         }
     }
