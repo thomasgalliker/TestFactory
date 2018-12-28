@@ -38,7 +38,7 @@ namespace TestFactory
             return systemTestBuilder.AddParallelTestStep(parallelTasks.Select(task => new TaskTestStep(task)));
         }
 
-        public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, ITestStep[] parallelTestSteps)
+        public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, params ITestStep[] parallelTestSteps)
         {
             return systemTestBuilder.AddParallelTestStep(parallelTestSteps.ToList());
         }

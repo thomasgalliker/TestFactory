@@ -4,12 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using TestFactory.Tests.Testdata;
+using TestFactory.Tests.TestSteps;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace TestFactory.Tests
 {
-    public class SystemTestBuilderTests
+    public partial class SystemTestBuilderTests
     {
         private readonly ITestOutputHelper testOutputHelper;
 
@@ -135,6 +136,34 @@ namespace TestFactory.Tests
             testResult.TestStepResults.ElementAt(0).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
             testResult.TestStepResults.ElementAt(1).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
             testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
+        }
+
+        [Fact]
+        public async Task ShouldRunTestStepsInParallel_2()
+        {
+            // Arrange
+            var oneSecond = TimeSpan.FromSeconds(1);
+            var systemTestBuilder = new SystemTestBuilder()
+                    .AddParallelTestStep(
+                        new TestStepX(this.testOutputHelper, 1),
+                        new TestStepX(this.testOutputHelper, 2),
+                        new TestStepX(this.testOutputHelper, 3),
+                        new TestStepX(this.testOutputHelper, 4),
+                        new TestStepX(this.testOutputHelper, 5))
+                ;
+
+            // Act
+            var testResult = await systemTestBuilder.Run();
+
+            // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
+            testResult.IsSuccessful.Should().BeTrue();
+            testResult.TestStepResults.Should().HaveCount(1);
+            var testStepResult0 = testResult.TestStepResults.ElementAt(0).As<ParallelTestStepResult>();
+            testStepResult0.Should().NotBeNull();
+            testStepResult0.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
+            testStepResult0.TestStepResults.Should().HaveCount(5);
         }
     }
 }
