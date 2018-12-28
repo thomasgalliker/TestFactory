@@ -8,19 +8,16 @@ using TestFactory.Extensions;
 namespace TestFactory
 {
     [DebuggerDisplay("ParallelTestStep: {this.TestSteps.Count()}")]
-    public class ParallelTestStep : ITestStep
+    public class ParallelTestStep : TestStepBase
     {
         public IEnumerable<ITestStep> TestSteps { get; }
 
-        public ParallelTestStep(IEnumerable<ITestStep> parallelTestSteps, string name = null)
+        public ParallelTestStep(IEnumerable<ITestStep> parallelTestSteps, string name = null) : base(name)
         {
             this.TestSteps = parallelTestSteps;
-            this.Name = name ?? this.GetType().GetFormattedName();
         }
 
-        public string Name { get; }
-
-        public async Task<ITestStepResult> Run()
+        public override async Task<ITestStepResult> Run()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
