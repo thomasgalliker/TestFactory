@@ -109,7 +109,7 @@ namespace TestFactory.Tests
             testResult.TestStepResults.ElementAt(1).Result.Should().NotBeNull();
         }
 
-        [Fact]
+        [Fact(Skip = "Timing issues")]
         public async Task ShouldRunTestStepsInParallel()
         {
             // Arrange
@@ -138,7 +138,7 @@ namespace TestFactory.Tests
             testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(400));
         }
 
-        [Fact]
+        [Fact(Skip = "Timing issues")]
         public async Task ShouldRunTestStepsInParallel_2()
         {
             // Arrange
