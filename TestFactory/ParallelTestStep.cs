@@ -7,32 +7,37 @@ using TestFactory.Extensions;
 
 namespace TestFactory
 {
-    [DebuggerDisplay("ParallelTestStep: {this.TestSteps.Count()}")]
-    public class ParallelTestStep : TestStepBase
-    {
-        public IEnumerable<ITestStep> TestSteps { get; }
-
-        public ParallelTestStep(IEnumerable<ITestStep> parallelTestSteps, string name = null) : base(name)
+        [DebuggerDisplay("{DebuggerDisplay,nq}")]
+        public class ParallelTestStep : TestStepBase
         {
-            this.TestSteps = parallelTestSteps;
-        }
+            public IEnumerable<ITestStep> TestSteps { get; }
 
-        public override async Task<ITestStepResult> Run()
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            Exception exception = null;
-            ITestStepResult[] testStepResults = null;
-            try
+            public ParallelTestStep(IEnumerable<ITestStep> parallelTestSteps, string name = null)
+                : base(name)
             {
-                testStepResults = await Task.WhenAll(this.TestSteps.Select(testStep => testStep.Run()));
+                this.TestSteps = parallelTestSteps;
             }
-            catch (Exception ex)
+
+            public override async Task<ITestStepResult> Run()
             {
-                exception = ex;
+                var parallelTestStep = this;
+                var stopwatch = Stopwatch.StartNew();
+                AggregateException aggregateException = null;
+                var testStepResults = new ITestStepResult[0];
+
+                var allTasks = Task.WhenAll(parallelTestStep.TestSteps.Select(testStep => testStep.Run()));
+                try
+                {
+                    await allTasks;
+                    testStepResults = await Task.WhenAll(parallelTestStep.TestSteps.Select(testStep => testStep.Run()));
+                }
+                catch
+                {
+                    aggregateException = allTasks.Exception;
+                }
+
+                stopwatch.Stop();
+                return new ParallelTestStepResult(this, stopwatch.Elapsed, aggregateException == null, testStepResults, aggregateException);
             }
-            stopwatch.Stop();
-            return new ParallelTestStepResult(this, stopwatch.Elapsed, exception == null, testStepResults, exception);
         }
-    }
 }
