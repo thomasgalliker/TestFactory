@@ -33,6 +33,9 @@ namespace TestFactory
             return systemTestBuilder;
         }
 
+        /// <summary>
+        /// Adds <see cref="parallelTasks"/> to run in parallel against each other. Each Task is wrapped into a new TaskTestStep.
+        /// </summary>
         public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, params Func<Task>[] parallelTasks)
         {
             return systemTestBuilder.AddParallelTestStep(parallelTasks.Select(task => new TaskTestStep(task)));
