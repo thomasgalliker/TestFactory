@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using TestFactory.Utils;
 using Xunit.Abstractions;
 
 namespace TestFactory.Tests.TestSteps
@@ -17,10 +18,13 @@ namespace TestFactory.Tests.TestSteps
 
         public override async Task<ITestStepResult> Run()
         {
-            await Task.Delay(1000);
-            this.testOutputHelper.WriteLine($"Step{this.stepNumber} finished on Thread {Thread.CurrentThread.ManagedThreadId}");
+            using (var stopwatch = StopWatch.StartNew())
+            {
+                await Task.Delay(1000);
+                this.testOutputHelper.WriteLine($"Step{this.stepNumber} finished on Thread {Thread.CurrentThread.ManagedThreadId}");
 
-            return new TestStepResult(this, null, isSuccessful: true);
+                return new TestStepResult(this, stopwatch.Elapsed, isSuccessful: true);
+            }
         }
     }
 }
