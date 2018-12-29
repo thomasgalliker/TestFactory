@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using TestFactory.Extensions;
+using TestFactory.Internal;
 
 namespace TestFactory
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using TestFactory.Extensions;
+using TestFactory.Internal;
 
 namespace TestFactory
 {

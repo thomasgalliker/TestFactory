@@ -1,4 +1,4 @@
-﻿namespace TestFactory.Extensions
+﻿namespace TestFactory.Internal
 {
     internal static class FormattingHelper
     {
