@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace TestFactory.TestSteps
+namespace TestFactory
 {
     public class CompletedTestStep : TestStepBase
     {
