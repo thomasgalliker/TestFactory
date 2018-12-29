@@ -109,8 +109,8 @@ namespace TestFactory.Tests
             testResult.TestStepResults.ElementAt(1).Result.Should().NotBeNull();
         }
 
-        [Fact(Skip = "Timing issues")]
-        public async Task ShouldRunTestStepsInParallel()
+        [Fact]
+        public async Task ShouldRunTestStepsParallelAndSequential()
         {
             // Arrange
             var oneSecond = TimeSpan.FromSeconds(1);
@@ -138,8 +138,8 @@ namespace TestFactory.Tests
             testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(400));
         }
 
-        [Fact(Skip = "Timing issues")]
-        public async Task ShouldRunTestStepsInParallel_2()
+        [Fact]
+        public async Task ShouldRunTestStepsParallel()
         {
             // Arrange
             var oneSecond = TimeSpan.FromSeconds(1);
@@ -160,10 +160,16 @@ namespace TestFactory.Tests
 
             testResult.IsSuccessful.Should().BeTrue();
             testResult.TestStepResults.Should().HaveCount(1);
-            var testStepResult0 = testResult.TestStepResults.ElementAt(0).As<ParallelTestStepResult>();
-            testStepResult0.Should().NotBeNull();
-            testStepResult0.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
-            testStepResult0.TestStepResults.Should().HaveCount(5);
+
+            var parallelTestStepResult = testResult.TestStepResults.ElementAt(0).As<ParallelTestStepResult>();
+            parallelTestStepResult.Should().NotBeNull();
+            parallelTestStepResult.Duration.Should().BeGreaterThan(oneSecond);
+            parallelTestStepResult.TestStepResults.Should().HaveCount(5);
+
+            foreach (var testStepResult in parallelTestStepResult.TestStepResults)
+            {
+                testStepResult.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(100));
+            }
         }
     }
 }
