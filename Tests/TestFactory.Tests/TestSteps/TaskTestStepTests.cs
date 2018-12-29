@@ -5,7 +5,7 @@ using FluentAssertions;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace TestFactory.Tests
+namespace TestFactory.Tests.TestSteps
 {
     public class TaskTestStepTests
     {
