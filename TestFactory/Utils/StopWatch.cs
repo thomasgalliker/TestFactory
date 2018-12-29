@@ -17,7 +17,7 @@ namespace TestFactory.Utils
             this.callback = callback;
             if (autostart)
             {
-                stopwatch.Start();
+                this.stopwatch.Start();
             }
         }
 
@@ -33,14 +33,14 @@ namespace TestFactory.Utils
 
         public StopWatch Start()
         {
-            stopwatch.Start();
+            this.stopwatch.Start();
             return this;
         }
 
         public StopWatch Stop()
         {
-            stopwatch.Stop();
-            callback?.Invoke(Elapsed);
+            this.stopwatch.Stop();
+            this.callback?.Invoke(this.Elapsed);
             return this;
         }
 
@@ -49,6 +49,6 @@ namespace TestFactory.Utils
             this.Stop();
         }
 
-        public TimeSpan Elapsed => stopwatch.Elapsed;
+        public TimeSpan Elapsed => this.stopwatch.Elapsed;
     }
 }
