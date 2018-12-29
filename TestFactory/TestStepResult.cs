@@ -27,11 +27,11 @@ namespace TestFactory
 
         public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, object result, Exception exception)
         {
-            this.TestStep = testStep;
+            this.TestStep = testStep ?? throw new ArgumentNullException(nameof(testStep));
+            this.Duration = duration ?? throw new ArgumentNullException(nameof(duration));
             this.IsSuccessful = isSuccessful;
             this.Result = result;
             this.Exception = exception;
-            this.Duration = duration;
         }
 
         public TestStepResult(ITestStep testStep, ITestResult nestedTestResult)
