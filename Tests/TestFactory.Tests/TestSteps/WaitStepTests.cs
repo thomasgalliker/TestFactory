@@ -23,12 +23,12 @@ namespace TestFactory.Tests.TestSteps
             ITestStep waitStep = new WaitStep(timeSpan);
 
             // Act
-            ITestStepResult testStepResult = await waitStep.Run();
+            var testStepResult = await waitStep.Run();
 
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
             testStepResult.Should().NotBeNull();
-            testStepResult.Duration.Should().BeGreaterOrEqualTo(timeSpan);
+            testStepResult.Duration.Should().BeGreaterThan(timeSpan);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace TestFactory.Tests.TestSteps
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
             testStepResult.Should().NotBeNull();
-            testStepResult.Duration.Should().BeGreaterOrEqualTo(TimeSpan.FromMilliseconds(milliseconds));
+            testStepResult.Duration.Should().BeGreaterThan(TimeSpan.FromMilliseconds(milliseconds));
         }
     }
 }
