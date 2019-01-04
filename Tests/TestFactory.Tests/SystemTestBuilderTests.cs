@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -133,9 +133,12 @@ namespace TestFactory.Tests
 
             testResult.IsSuccessful.Should().BeTrue();
             testResult.TestStepResults.Should().HaveCount(3);
+
+#if DEBUG
             testResult.TestStepResults.ElementAt(0).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
             testResult.TestStepResults.ElementAt(1).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
             testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(400));
+#endif
         }
 
         [Fact]
