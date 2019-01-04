@@ -59,7 +59,10 @@ namespace TestFactory.Tests.TestSteps
 
             testStepResult.Should().NotBeNull();
             testStepResult.IsSuccessful.Should().BeTrue();
+
+#if DEBUG
             testStepResult.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
+#endif
         }
     }
 }
