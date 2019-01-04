@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using TestFactory.Utils;
@@ -98,8 +98,11 @@ namespace TestFactory.Tests.Utils
             await Task.Delay(100);
 
             // Assert
+            stopwatch.Elapsed.Should().BeGreaterThan(TimeSpan.Zero);
+#if DEBUG
             stopwatch.Elapsed.Should().BeGreaterThan(TimeSpan.FromMilliseconds(100));
             stopwatch.Elapsed.Should().BeLessThan(TimeSpan.FromMilliseconds(200));
+#endif
         }
 
 
