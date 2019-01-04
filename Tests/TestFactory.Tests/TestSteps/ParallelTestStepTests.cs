@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -32,7 +32,7 @@ namespace TestFactory.Tests.TestSteps
 
             testStepResult.Should().NotBeNull();
             testStepResult.IsSuccessful.Should().BeTrue();
-            testStepResult.Duration.Should().BeCloseTo(TimeSpan.FromMilliseconds(150));
+            testStepResult.Duration.Should().BeCloseTo(TimeSpan.Zero);
         }
 
         [Fact]
