@@ -10,6 +10,10 @@
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+   
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.5.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
