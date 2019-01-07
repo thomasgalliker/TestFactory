@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using TestFactory.Tests.Testdata;
+using TestFactory.Tests.TestSteps;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace TestFactory.Tests
 {
-    public class SystemTestBuilderTests
+    public partial class SystemTestBuilderTests
     {
         private readonly ITestOutputHelper testOutputHelper;
 
@@ -31,14 +32,14 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.Should().HaveCount(2);
             testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeTrue();
             testResult.TestStepResults.ElementAt(1).IsSuccessful.Should().BeFalse();
             testResult.Exception.InnerExceptions.Should().HaveCount(1);
             testResult.Exception.InnerExceptions[0].Message.Should().Contain("Something failed");
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
 
         [Fact]
@@ -55,14 +56,14 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.Should().HaveCount(3);
             testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.ElementAt(1).IsSuccessful.Should().BeTrue();
             testResult.Exception.InnerExceptions.Should().HaveCount(1);
             testResult.Exception.InnerExceptions[0].Message.Should().Contain("Something failed");
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
 
         [Fact]
@@ -77,14 +78,14 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.Should().HaveCount(1);
             testResult.TestStepResults.ElementAt(0).IsSuccessful.Should().BeFalse();
             testResult.Exception.InnerExceptions.Should().HaveCount(1);
             testResult.Exception.InnerExceptions[0].Message.Should().Contain("An unhandled exception occurred");
             testResult.Exception.InnerExceptions[0].Should().BeOfType<InvalidOperationException>();
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
 
         [Fact]
@@ -100,16 +101,16 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeFalse();
             testResult.TestStepResults.Should().HaveCount(2);
             testResult.TestStepResults.ElementAt(0).Result.Should().NotBeNull();
             testResult.TestStepResults.ElementAt(1).Result.Should().NotBeNull();
-
-            this.testOutputHelper.WriteLine(testResult.ToString());
         }
 
         [Fact]
-        public async Task ShouldRunTestStepsInParallel()
+        public async Task ShouldRunTestStepsParallelAndSequential()
         {
             // Arrange
             var oneSecond = TimeSpan.FromSeconds(1);
@@ -128,13 +129,50 @@ namespace TestFactory.Tests
             var testResult = await systemTestBuilder.Run();
 
             // Assert
+            this.testOutputHelper.WriteLine(testResult.ToString());
+
             testResult.IsSuccessful.Should().BeTrue();
             testResult.TestStepResults.Should().HaveCount(3);
-            testResult.TestStepResults.ElementAt(0).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(100));
-            testResult.TestStepResults.ElementAt(1).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(100));
-            testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
 
+#if DEBUG
+            testResult.TestStepResults.ElementAt(0).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
+            testResult.TestStepResults.ElementAt(1).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(200));
+            testResult.TestStepResults.ElementAt(2).Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(400));
+#endif
+        }
+
+        [Fact]
+        public async Task ShouldRunTestStepsParallel()
+        {
+            // Arrange
+            var oneSecond = TimeSpan.FromSeconds(1);
+            var systemTestBuilder = new SystemTestBuilder()
+                    .AddParallelTestStep(
+                        new TestStepX(this.testOutputHelper, 1),
+                        new TestStepX(this.testOutputHelper, 2),
+                        new TestStepX(this.testOutputHelper, 3),
+                        new TestStepX(this.testOutputHelper, 4),
+                        new TestStepX(this.testOutputHelper, 5))
+                ;
+
+            // Act
+            var testResult = await systemTestBuilder.Run();
+
+            // Assert
             this.testOutputHelper.WriteLine(testResult.ToString());
+
+            testResult.IsSuccessful.Should().BeTrue();
+            testResult.TestStepResults.Should().HaveCount(1);
+
+            var parallelTestStepResult = testResult.TestStepResults.ElementAt(0).As<ParallelTestStepResult>();
+            parallelTestStepResult.Should().NotBeNull();
+            parallelTestStepResult.Duration.Should().BeGreaterThan(oneSecond);
+            parallelTestStepResult.TestStepResults.Should().HaveCount(5);
+
+            foreach (var testStepResult in parallelTestStepResult.TestStepResults)
+            {
+                testStepResult.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(100));
+            }
         }
     }
 }

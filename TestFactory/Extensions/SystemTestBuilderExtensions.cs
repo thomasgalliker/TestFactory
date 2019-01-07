@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TestFactory.TestSteps;
 
 namespace TestFactory
 {
@@ -34,22 +33,23 @@ namespace TestFactory
             return systemTestBuilder;
         }
 
+        /// <summary>
+        /// Adds <see cref="parallelTasks"/> to run in parallel against each other. Each Task is wrapped into a new TaskTestStep.
+        /// </summary>
         public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, params Func<Task>[] parallelTasks)
         {
             return systemTestBuilder.AddParallelTestStep(parallelTasks.Select(task => new TaskTestStep(task)));
         }
 
-        public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, TaskTestStep[] parallelTestSteps)
+        public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, params ITestStep[] parallelTestSteps)
         {
             return systemTestBuilder.AddParallelTestStep(parallelTestSteps.ToList());
         }
 
-        public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, IEnumerable<TaskTestStep> parallelTestSteps)
+        public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, IEnumerable<ITestStep> parallelTestSteps)
         {
             return systemTestBuilder.AddTestStep(new ParallelTestStep(parallelTestSteps));
         }
-
-
 
         public static SystemTestBuilder Given(this SystemTestBuilder systemTestBuilder, IGivenTestStep step)
         {

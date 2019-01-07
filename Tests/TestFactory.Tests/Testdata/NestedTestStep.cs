@@ -5,6 +5,8 @@ namespace TestFactory.Tests.Testdata
 {
     public class NestedTestStep : ITestStep
     {
+        public string Name { get; } = nameof(NestedTestStep);
+
         public async Task<ITestStepResult> Run()
         {
             var nestedSystemTestBuilder = new SystemTestBuilder();

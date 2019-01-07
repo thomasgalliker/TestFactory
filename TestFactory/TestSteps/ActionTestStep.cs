@@ -2,18 +2,18 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace TestFactory.TestSteps
+namespace TestFactory
 {
-    public class ActionTestStep : ITestStep
+    public class ActionTestStep : TestStepBase
     {
         private readonly Action action;
 
-        public ActionTestStep(Action action)
+        public ActionTestStep(Action action, string name = null) : base(name)
         {
             this.action = action;
         }
 
-        public Task<ITestStepResult> Run()
+        public override Task<ITestStepResult> Run()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();

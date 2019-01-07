@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using TestFactory.TestSteps;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -24,12 +23,16 @@ namespace TestFactory.Tests.TestSteps
             ITestStep waitStep = new WaitStep(timeSpan);
 
             // Act
-            ITestStepResult testStepResult = await waitStep.Run();
+            var testStepResult = await waitStep.Run();
 
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
             testStepResult.Should().NotBeNull();
-            testStepResult.Duration.Should().BeGreaterOrEqualTo(timeSpan);
+#if DEBUG
+            testStepResult.Duration.Should().BeGreaterThan(timeSpan);
+#else
+            testStepResult.Duration.Should().BeGreaterThan(TimeSpan.Zero);
+#endif
         }
 
         [Fact]
@@ -45,7 +48,12 @@ namespace TestFactory.Tests.TestSteps
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
             testStepResult.Should().NotBeNull();
-            testStepResult.Duration.Should().BeGreaterOrEqualTo(TimeSpan.FromMilliseconds(milliseconds));
+
+#if DEBUG
+            testStepResult.Duration.Should().BeGreaterThan(TimeSpan.FromMilliseconds(milliseconds));
+#else
+            testStepResult.Duration.Should().BeGreaterThan(TimeSpan.Zero);
+#endif
         }
     }
 }

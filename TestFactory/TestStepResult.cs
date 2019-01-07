@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using TestFactory.Extensions;
+using TestFactory.Internal;
 
 namespace TestFactory
 {
@@ -10,31 +10,31 @@ namespace TestFactory
     {
         private static readonly string Intent = FormattingHelper.Indent(8);
 
-        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful) 
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful)
             : this(testStep, duration, isSuccessful, result: null)
         {
         }
 
-        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, object result) 
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, object result)
             : this(testStep, duration, isSuccessful, result: result, exception: null)
         {
         }
 
-        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, Exception exception) 
+        public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, Exception exception)
             : this(testStep, duration, isSuccessful, result: null, exception: exception)
         {
         }
 
         public TestStepResult(ITestStep testStep, TimeSpan? duration, bool isSuccessful, object result, Exception exception)
         {
-            this.TestStep = testStep;
+            this.TestStep = testStep ?? throw new ArgumentNullException(nameof(testStep));
+            this.Duration = duration ?? throw new ArgumentNullException(nameof(duration));
             this.IsSuccessful = isSuccessful;
             this.Result = result;
             this.Exception = exception;
-            this.Duration = duration;
         }
 
-        public TestStepResult(ITestStep testStep, ITestResult nestedTestResult) 
+        public TestStepResult(ITestStep testStep, ITestResult nestedTestResult)
             : this(testStep, isSuccessful: nestedTestResult.IsSuccessful, result: nestedTestResult, exception: nestedTestResult.Exception, duration: nestedTestResult.Duration)
         {
         }
@@ -63,7 +63,7 @@ namespace TestFactory
         {
             var stringBuilder = new StringBuilder();
 
-            stringBuilder.AppendLine($"-> {this.TestStep.GetType().GetFormattedName()}:\t\t\tIsSuccessful = {this.IsSuccessful},\t\t\tDuration = {this.Duration}");
+            stringBuilder.AppendLine($"-> {this.TestStep.Name}:\t\t\tIsSuccessful = {this.IsSuccessful},\t\t\tDuration = {this.Duration}");
             if (this.IsSuccessful == false)
             {
                 stringBuilder.Append($"{Intent}{this.Exception.ToString().Replace("\n", "\n" + Intent)}");
@@ -71,8 +71,7 @@ namespace TestFactory
                 stringBuilder.AppendLine();
             }
 
-            var nestedTestResult = this.Result as TestResult;
-            if (nestedTestResult != null)
+            if (this.Result is TestResult nestedTestResult)
             {
                 var nestedString = nestedTestResult.ToString(Formats.Compact);
                 foreach (var line in nestedString.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None))

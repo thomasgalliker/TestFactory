@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace TestFactory.Extensions
+namespace TestFactory.Internal
 {
     internal static class TypeExtensions
     {

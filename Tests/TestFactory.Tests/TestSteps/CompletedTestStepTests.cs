@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
@@ -7,32 +6,30 @@ using Xunit.Abstractions;
 
 namespace TestFactory.Tests.TestSteps
 {
-    public class ActionTestStepTests
+    public class CompletedTestStepTests
     {
         private readonly ITestOutputHelper testOutputHelper;
 
-        public ActionTestStepTests(ITestOutputHelper testOutputHelper)
+        public CompletedTestStepTests(ITestOutputHelper testOutputHelper)
         {
             this.testOutputHelper = testOutputHelper;
         }
 
         [Fact]
-        public async Task ShouldCallActionOnRun()
+        public async Task ShouldRunCompletedTestStep()
         {
             // Arrange
-            var actionCalled = false;
-            Action action = () => { actionCalled = true; };
-            ITestStep actionTestStep = new ActionTestStep(action);
+            ITestStep completedTestStep = new CompletedTestStep();
 
             // Act
-            ITestStepResult testStepResult = await actionTestStep.Run();
+            var testStepResult = await completedTestStep.Run();
 
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
+
             testStepResult.Should().NotBeNull();
             testStepResult.IsSuccessful.Should().BeTrue();
-
-            actionCalled.Should().BeTrue();
+            testStepResult.Duration.Should().Be(TimeSpan.Zero);
         }
     }
 }

@@ -4,23 +4,23 @@ using System.Threading.Tasks;
 
 namespace TestFactory
 {
-    public class TaskTestStep : ITestStep
+    public class TaskTestStep : TestStepBase
     {
-        private readonly Func<Task> taskFunc;
+        private readonly Func<Task> createTask;
 
-        public TaskTestStep(Func<Task> taskFunc)
+        public TaskTestStep(Func<Task> createTask, string name = null) : base(name)
         {
-            this.taskFunc = taskFunc;
+            this.createTask = createTask;
         }
 
-        public async Task<ITestStepResult> Run()
+        public override async Task<ITestStepResult> Run()
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             Exception exception = null;
             try
             {
-                var task = this.taskFunc();
+                var task = this.createTask();
                 await task.ConfigureAwait(false);
             }
             catch (Exception ex)
