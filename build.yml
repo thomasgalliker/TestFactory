@@ -63,7 +63,7 @@ steps:
   inputs:
     command: test
     projects: '**/*.Tests.csproj'
-    arguments: ''
+    arguments: '--no-build'
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack NuGet PreRelease'
