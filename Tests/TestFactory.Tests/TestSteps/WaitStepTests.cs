@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
@@ -28,7 +28,11 @@ namespace TestFactory.Tests.TestSteps
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
             testStepResult.Should().NotBeNull();
+#if DEBUG
             testStepResult.Duration.Should().BeGreaterThan(timeSpan);
+#else
+            testStepResult.Duration.Should().BeGreaterThan(TimeSpan.Zero);
+#endif
         }
 
         [Fact]
@@ -44,7 +48,12 @@ namespace TestFactory.Tests.TestSteps
             // Assert
             this.testOutputHelper.WriteLine(testStepResult.ToString());
             testStepResult.Should().NotBeNull();
+
+#if DEBUG
             testStepResult.Duration.Should().BeGreaterThan(TimeSpan.FromMilliseconds(milliseconds));
+#else
+            testStepResult.Duration.Should().BeGreaterThan(TimeSpan.Zero);
+#endif
         }
     }
 }
