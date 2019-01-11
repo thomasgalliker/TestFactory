@@ -19,11 +19,6 @@ namespace TestFactory
                 throw new ArgumentNullException(nameof(testStepResults));
             }
 
-            if (!testStepResults.Any())
-            {
-                throw new ArgumentException("Must have at least 1 test step result.", nameof(testStepResults));
-            }
-
             this.testStepResults = testStepResults;
             this.IsSuccessful = this.TestStepResults.All(r => r.IsSuccessful);
             var exceptions = this.TestStepResults
