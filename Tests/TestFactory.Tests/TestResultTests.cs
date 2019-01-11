@@ -16,17 +16,19 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldCreateTestResult_ThrowsExceptionIfNoResults()
+        public void ShouldCreateTestResult_NoTestStepResults()
         {
             // Act
-            Action action = () => new TestResult();
+            ITestResult testResult = new TestResult();
 
             // Assert
-            action.Should().Throw<ArgumentException>().Which.Message.Should().Contain("Must have at least 1 test step result");
+            testResult.IsSuccessful.Should().BeTrue();
+            testResult.Exception.Should().BeNull();
+            testResult.Duration.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
-        public void ShouldCreateTestResult_MultipleSteps_Success()
+        public void ShouldCreateTestResult_MultipleTestStepResults_Success()
         {
             // Arrange
             ITestStep testStep = new EmptyActionTestStep();
@@ -43,7 +45,7 @@ namespace TestFactory.Tests
         }
 
         [Fact]
-        public void ShouldCreateTestResult_MultipleSteps_Failed()
+        public void ShouldCreateTestResult_MultipleTestStepResults_Failed()
         {
             // Arrange
             ITestStep testStep = new EmptyActionTestStep();
