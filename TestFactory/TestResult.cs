@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -19,14 +19,18 @@ namespace TestFactory
                 throw new ArgumentNullException(nameof(testStepResults));
             }
 
-            if (!testStepResults.Any())
-            {
-                throw new ArgumentException("Must have at least 1 test step result.", nameof(testStepResults));
-            }
-
             this.testStepResults = testStepResults;
             this.IsSuccessful = this.TestStepResults.All(r => r.IsSuccessful);
-            this.Exception = new AggregateException(this.TestStepResults.Where(r => r.Exception != null).Select(r => r.Exception));
+            var exceptions = this.TestStepResults
+                .Where(r => r.Exception != null)
+                .Select(r => r.Exception)
+                .ToList();
+
+            if (exceptions.Any())
+            {
+                this.Exception = new AggregateException(exceptions);
+            }
+
             this.Duration = testStepResults.Sum(r => r.Duration.GetValueOrDefault());
         }
 
