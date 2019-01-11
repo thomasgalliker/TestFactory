@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,7 +48,12 @@ namespace TestFactory
 
         public static SystemTestBuilder AddParallelTestStep(this SystemTestBuilder systemTestBuilder, IEnumerable<ITestStep> parallelTestSteps)
         {
-            return systemTestBuilder.AddTestStep(new ParallelTestStep(parallelTestSteps));
+            if (parallelTestSteps.Any())
+            {
+                return systemTestBuilder.AddTestStep(new ParallelTestStep(parallelTestSteps));
+            }
+
+            return systemTestBuilder;
         }
 
         public static SystemTestBuilder Given(this SystemTestBuilder systemTestBuilder, IGivenTestStep step)
