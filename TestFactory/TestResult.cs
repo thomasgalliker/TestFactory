@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,7 +26,16 @@ namespace TestFactory
 
             this.testStepResults = testStepResults;
             this.IsSuccessful = this.TestStepResults.All(r => r.IsSuccessful);
-            this.Exception = new AggregateException(this.TestStepResults.Where(r => r.Exception != null).Select(r => r.Exception));
+            var exceptions = this.TestStepResults
+                .Where(r => r.Exception != null)
+                .Select(r => r.Exception)
+                .ToList();
+
+            if (exceptions.Any())
+            {
+                this.Exception = new AggregateException(exceptions);
+            }
+
             this.Duration = testStepResults.Sum(r => r.Duration.GetValueOrDefault());
         }
 
