@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Text;
 using TestFactory.Internal;
@@ -64,7 +64,7 @@ namespace TestFactory
             var stringBuilder = new StringBuilder();
 
             stringBuilder.AppendLine($"-> {this.TestStep.Name}:\t\t\tIsSuccessful = {this.IsSuccessful},\t\t\tDuration = {this.Duration}");
-            if (this.IsSuccessful == false)
+            if (this.Exception != null)
             {
                 stringBuilder.Append($"{Intent}{this.Exception.ToString().Replace("\n", "\n" + Intent)}");
                 stringBuilder.AppendLine();
