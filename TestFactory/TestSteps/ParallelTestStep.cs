@@ -35,7 +35,8 @@ namespace TestFactory
             }
 
             stopwatch.Stop();
-            return new ParallelTestStepResult(this, stopwatch.Elapsed, aggregateException == null, testStepResults, aggregateException);
+            var allSuccessful = testStepResults.All(r => r.IsSuccessful);
+            return new ParallelTestStepResult(this, stopwatch.Elapsed, allSuccessful && aggregateException == null, testStepResults, aggregateException);
         }
     }
 }

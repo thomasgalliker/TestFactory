@@ -36,7 +36,7 @@ namespace TestFactory.Tests.TestSteps
         }
 
         [Fact]
-        public async Task ShouldRunParallelTestStep_WithTaskList()
+        public async Task ShouldRunParallelTestStep_WithTaskList_Successful()
         {
             // Arrange
             var oneSecond = TimeSpan.FromSeconds(1);
@@ -59,6 +59,34 @@ namespace TestFactory.Tests.TestSteps
 
             testStepResult.Should().NotBeNull();
             testStepResult.IsSuccessful.Should().BeTrue();
+
+#if DEBUG
+            testStepResult.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
+#endif
+        }
+
+        [Fact]
+        public async Task ShouldRunParallelTestStep_WithTaskList_FailsIfOneStepFails()
+        {
+            // Arrange
+            var oneSecond = TimeSpan.FromSeconds(1);
+            IEnumerable<ITestStep> parallelTestSteps = new List<ITestStep>
+            {
+                new TestStepX(this.testOutputHelper, 1),
+                new TestStepX(this.testOutputHelper, 2),
+                new ActionTestStep(() => { throw new Exception("Something failed"); }, "ExceptionStep")
+            };
+
+            var parallelTestStep = new ParallelTestStep(parallelTestSteps);
+
+            // Act
+            var testStepResult = await parallelTestStep.Run();
+
+            // Assert
+            this.testOutputHelper.WriteLine(testStepResult.ToString());
+
+            testStepResult.Should().NotBeNull();
+            testStepResult.IsSuccessful.Should().BeFalse();
 
 #if DEBUG
             testStepResult.Duration.Should().BeCloseTo(oneSecond, precision: TimeSpan.FromMilliseconds(150));
